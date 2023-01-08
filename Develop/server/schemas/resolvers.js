@@ -34,7 +34,23 @@ const resolvers = {
                 throw new AuthenticationError('Incorrect credentials')
             }
 
-            
-        }
+            const token = singToken(user)
+            return { token, user };
+        },
+        saveBook: async ( parent, { bookData }, context) => {
+            if (context.user) {
+                const updatedUser = await User.findByIdAndUpdate(
+                    { _id: context.user._id },
+                    { $push: { saveBooks: bookData } },
+                    { new: true }
+                );
+
+                return updatedUser;
+            }
+
+            throw new AuthenticationError('you need to be logged in! ');
+        },
     },
 }
+
+module.exports = resolvers;
