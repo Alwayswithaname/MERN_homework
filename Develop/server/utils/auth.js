@@ -1,40 +1,40 @@
-import decode from 'jwt-decide';
+const jwt = require('jsonwebtoken');
 
-class AuthService {
-  getProfile() {
-    return decode(this.getToken());
-  }
+// set token secret and expiration date
+const secret = 'mysecretsshhhhh';
+const expiration = '2h';
 
-  loggedIn() {
-    const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
-  }
+module.exports = {
+  // function for our authenticated routes
+  authMiddleware: function ({ req }) {
+    // allows token to be sent via  req.query or headers
+    let token =  req.query.token || req.headers.authorization; // req.body.token ||
 
-  isTokenExpired(token) {
-  try {
-const decoded = decode(token);
-if (decoded.exp < DataTransfer.now() / 1000) {
-  return true;
-} else return false;
-} catch ( err ) {
-  return false;
-}
-}
+    // ["Bearer", "<tokenvalue>"]
+    if (req.headers.authorization) {
+      token = token.split(' ').pop().trim();
+    }
 
-getToken() {
-  return localStorage.getItem('id_token');
-}
+    if (!token) {
+      return req;
+    }
 
-login(idToken) {
-  localStorage.setItem('id_token', idToken);
-  window.location.assign('/');
-}
+    // verify token and get user data out of it
+    try {
+      const { data } = jwt.verify(token, secret, { maxAge: expiration });
+      req.user = data;
+    } catch {
+      console.log('Invalid tokeeeen');
+    }
 
-logout() {
-  localStorage.removeItem('id_token');
+    return req;
 
-  window.location.assign('/');
-}
-}
+    // send to next endpoint
+    // next();
+  },
+  signToken: function (user) {
+    const payload = { username: user.usernam, email: user.email, _id: user._id };
 
-export default new AuthService();
+    return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+  },
+};

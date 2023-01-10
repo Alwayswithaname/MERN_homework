@@ -33,7 +33,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!loading) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
@@ -54,7 +54,7 @@ const SavedBooks = () => {
           {userData.savedBooks.map((book) => {
             return (
               <Card key={book.bookId} border='dark'>
-                {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
+                {book.image ? ( <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> ) : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
                   <p className='small'>Authors: {book.authors}</p>
