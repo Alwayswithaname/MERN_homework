@@ -15,7 +15,7 @@ const typeDefs = gql`
         description: String
         image: String
         link: String
-        tilte: String
+        title: String
     }
     
     type Auth {
@@ -28,8 +28,7 @@ const typeDefs = gql`
         bookId: String!
         description: String!
         image: String
-        link: String
-        tilte: String!
+        title: String!
     }
     
     type Query {
