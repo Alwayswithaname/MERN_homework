@@ -15,11 +15,11 @@ const typeDefs = gql`
         description: String
         image: String
         link: String
-        tilte: String!
+        tilte: String
     }
     
     type Auth {
-        token: ID!
+        token: String
         user: User
     }
     
